@@ -26,14 +26,14 @@ namespace ABP.UOW.Inspections
         public async Task<bool> CommitJob()
         {
             var count = await _jobRepository.CountAsync();
-
+            var job = new Job();
             using (var uow = _unitOfWorkManager.Begin(
                 requiresNew: true, isTransactional: true
             ))
             {
                 //...这里会操作数据库
                 {
-                    var job = new Job();
+                    job = new Job();
                     job.Name = DateTime.Now.Ticks.ToString() + "_1";
                     await _jobRepository.InsertAsync(job);
                 }
@@ -48,26 +48,26 @@ namespace ABP.UOW.Inspections
             count = await _jobRepository.CountAsync();
             if(count > 0)
             {
-                var job = await _jobRepository.FirstOrDefaultAsync();
+                job = await _jobRepository.FirstOrDefaultAsync();
                 job.Description = DateTime.Now.Ticks.ToString() + "_1";
                 await _jobRepository.UpdateAsync(job);
             }
             if (count > 0)
             {
-                var job = await _jobRepository.FirstOrDefaultAsync();
+                job = await _jobRepository.FirstOrDefaultAsync();
                 job.Description = DateTime.Now.Ticks.ToString() + "_2";
                 await _jobRepository.UpdateAsync(job);
             }
             {
-                var job = await _jobRepository.FirstOrDefaultAsync();
+                job = await _jobRepository.FirstOrDefaultAsync();
             }
 
             await CurrentUnitOfWork.SaveChangesAsync();
 
             {
-                var job = await _jobRepository.FirstOrDefaultAsync();
+                job = await _jobRepository.FirstOrDefaultAsync();
             }
-            throw new Exception("t");
+            //throw new Exception("t");
 
             return true;    
         }
